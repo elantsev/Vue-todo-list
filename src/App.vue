@@ -16,32 +16,42 @@ export default {
   components: { Todos, Header, AddTodo },
   data() {
     return {
-      todos: [
-        {
-          id: 1,
-          title: "Todo One",
-          completed: false
-        },
-        {
-          id: 2,
-          title: "Todo Two",
-          completed: true
-        },
-        {
-          id: 3,
-          title: "Todo Three",
-          completed: false
-        }
-      ]
+      todos: []
     };
   },
   methods: {
     deleteTodo(id) {
-      this.todos = this.todos.filter(todo => todo.id !== id);
+      fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+        method: "DELETE" // *GET, POST, PUT, DELETE, etc.
+      })
+        .then(response => response.json()) // парсит JSON ответ в Javascript объект;
+        .then(() => (this.todos = this.todos.filter(todo => todo.id !== id)));
     },
-    addTodo(todo) {
-      this.todos = [...this.todos, todo];
+    addTodo(newTodo) {
+      const { title, completed } = newTodo;
+      fetch("https://jsonplaceholder.typicode.com/todos", {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+
+        body: JSON.stringify({ title, completed }) // тип данных в body должен соответвовать значению заголовка "Content-Type"
+      })
+        .then(response => response.json()) // парсит JSON ответ в Javascript объект;
+        .then(
+          response =>
+            (this.todos = [
+              ...this.todos,
+              { id: response.id, title, completed }
+            ])
+        );
+      // .catch(err => console.log(err));
     }
+  },
+  created() {
+    fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
+      .then(res => res.json())
+      .then(data => (this.todos = data));
+    // .catch(err => {
+    //   console.log(err);
+    // });
   }
 };
 </script>

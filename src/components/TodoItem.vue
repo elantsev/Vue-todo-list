@@ -22,6 +22,7 @@ export default {
 
 <style scoped>
 .todo-item {
+  text-align: left;
   background: #f4f4f4;
   padding: 10px;
   border-bottom: 1px dotted #ccc;
